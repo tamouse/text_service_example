@@ -1,0 +1,2 @@
+class ProviderError < ApplicationRecord
+end

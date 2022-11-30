@@ -1,0 +1,9 @@
+provider_1:
+  id: 1
+  endpoint: 'https://mock-text-provider.parentsquare.com/provider1'
+  weight: 1.0
+
+provider_2:
+  id: 2
+  endpoint: 'https://mock-text-provider.parentsquare.com/provider2'
+  weight: 2.0

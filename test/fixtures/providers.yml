@@ -1,0 +1,3 @@
+provider_1:
+  id: 1
+  endpoint: "https://mock-text-provider.parentsquare.com/provider1"
