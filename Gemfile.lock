@@ -90,6 +90,10 @@ GEM
     fabrication (2.30.0)
     faker (3.0.0)
       i18n (>= 1.8.11, < 2)
+    faraday (2.7.1)
+      faraday-net_http (>= 2.0, < 3.1)
+      ruby2_keywords (>= 0.0.4)
+    faraday-net_http (3.0.2)
     ffi (1.15.5)
     globalid (1.0.0)
       activesupport (>= 5.0)
@@ -162,6 +166,7 @@ GEM
       zeitwerk (~> 2.5)
     rake (13.0.6)
     redis (4.8.0)
+    ruby2_keywords (0.0.5)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -208,6 +213,7 @@ DEPENDENCIES
   bootstrap (~> 5.2.2)
   fabrication
   faker
+  faraday
   importmap-rails
   jbuilder
   popper_js (~> 2.11.5)
