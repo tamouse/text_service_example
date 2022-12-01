@@ -50,7 +50,7 @@ gem "bootsnap", require: false
 
 gem 'popper_js', '~> 2.11.5'
 gem 'bootstrap', '~> 5.2.2'
-gem 'provider_api', path: './lib/provider_api/'
+gem 'provider_api', path: File.expand_path('../lib/provider_api/', __FILE__)
 gem 'faraday'
 
 group :development, :test do
@@ -73,4 +73,5 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  gem 'vcr'
 end

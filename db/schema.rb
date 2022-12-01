@@ -11,19 +11,20 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2022_11_30_173518) do
-  create_table "message_errors", force: :cascade do |t|
-    t.integer "message_id", null: false
-    t.string "status_code"
-    t.text "message"
-    t.text "raw_body"
+  create_table "message_tries", force: :cascade do |t|
+    t.integer "message_id"
+    t.string "statuw"
+    t.integer "try_number"
+    t.string "response_status_code"
+    t.text "response_message"
+    t.text "response_raw_body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["message_id"], name: "index_message_errors_on_message_id"
+    t.index ["message_id"], name: "index_message_tries_on_message_id"
   end
 
   create_table "messages", force: :cascade do |t|
-    t.integer "phone_id", null: false
-    t.text "body"
+    t.integer "phone_id"
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -31,7 +32,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_30_173518) do
   end
 
   create_table "phone_errors", force: :cascade do |t|
-    t.integer "phone_id", null: false
+    t.integer "phone_id"
     t.integer "status_code"
     t.text "message"
     t.text "raw_body"
@@ -49,12 +50,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_30_173518) do
   end
 
   create_table "provider_errors", force: :cascade do |t|
+    t.integer "provider_id"
     t.string "status"
     t.boolean "active"
     t.text "message"
     t.text "raw_body"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["provider_id"], name: "index_provider_errors_on_provider_id"
   end
 
   create_table "providers", force: :cascade do |t|
@@ -72,7 +75,4 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_30_173518) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "message_errors", "messages"
-  add_foreign_key "messages", "phones"
-  add_foreign_key "phone_errors", "phones"
 end

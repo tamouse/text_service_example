@@ -1,4 +1,4 @@
-class CreateMessageErrors < ActiveRecord::Migration[7.0]
+class CreateMessageTries < ActiveRecord::Migration[7.0]
   def change
     create_table :message_tries do |t|
       t.belongs_to :message, index: true
