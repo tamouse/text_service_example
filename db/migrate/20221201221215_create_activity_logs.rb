@@ -5,7 +5,7 @@ class CreateActivityLogs < ActiveRecord::Migration[7.0]
       t.references :loggable, polymorphic: true, null: false, index: true 
       t.boolean :success     # True if this iteration succeeded
       t.boolean :is_valid    # True if this iteration was valid
-      t.integer :iteration   # Number of times this loggable has repeated the same activity
+      t.integer :iteration, default: 0  # Number of times this loggable has repeated the same activity
       t.blob    :data, default: "{}"    # Will hold a JSON string for serioalizing loggable-specific info 
 
       t.timestamps

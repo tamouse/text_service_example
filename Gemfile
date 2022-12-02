@@ -54,8 +54,8 @@ gem 'provider_api', path: File.expand_path('../lib/provider_api/', __FILE__)
 gem 'faraday'
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "pry-rails"
+  gem "pry-byebug"
   gem "fabrication"
   gem "faker"
 end

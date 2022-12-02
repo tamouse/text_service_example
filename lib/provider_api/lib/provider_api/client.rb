@@ -5,11 +5,11 @@ module ProviderApi
 
     include ProviderApi::Utils
     
-    attr_reader :request_body                   # Message request_body of the request
+    attr_reader :request_body           # Message request_body of the request
     attr_reader :callback               # The URL to tell the provider to callback after the message iks sent
     attr_reader :endpoint               # Endpoint for provider
     attr_reader :response               # Holds the response from the endpoint
-    attr_accessor :result
+    attr_accessor :result               # Result of the actions, Success or Failure
 
     def initialize(endpoint:, callback:)
       @endpoint = endpoint
@@ -37,10 +37,9 @@ module ProviderApi
 
     def prepare_body(phone_number:, message_body:)
       @request_body = {}.tap do |b|
-        # NOTE: doing it this way allows the test to try a failure response from the provider request
-        b[:to_number] = phone_number if phone_number.present?
-        b[:message] = message_body if message_body.present?
-        b[:callback_url] = callback
+        b[:to_number]    = phone_number if phone_number.present?
+        b[:message]      = message_body if message_body.present?
+        b[:callback_url] = callback     if callback.present?
       end
     end
 
@@ -53,6 +52,10 @@ module ProviderApi
         else
           nil
         end
+    end
+
+    def success?
+      result.class.name.demodulize "Success"
     end
 
   end
