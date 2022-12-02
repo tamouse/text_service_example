@@ -25,7 +25,9 @@ module ProviderApi
       self
     end
 
-    private
+    def success?
+      result.class.name.demodulize == "Success"
+    end
 
     def client
       return @client if defined?(@client)
@@ -36,11 +38,11 @@ module ProviderApi
     end
 
     def prepare_body(phone_number:, message_body:)
-      @request_body = {}.tap do |b|
-        b[:to_number]    = phone_number if phone_number.present?
-        b[:message]      = message_body if message_body.present?
-        b[:callback_url] = callback     if callback.present?
-      end
+      @request_body = {
+        to_number: phone_number,
+        message: message_body,
+        callback_url: callback
+      }
     end
 
     def process_response
@@ -53,10 +55,5 @@ module ProviderApi
           nil
         end
     end
-
-    def success?
-      result.class.name.demodulize "Success"
-    end
-
   end
 end

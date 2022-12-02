@@ -22,7 +22,7 @@ class SendMessageService
 
   def initialize(message_params)
     @phone_number = message_params[:phone_number]
-    @message_body = message_params[:message_params]
+    @message_body = message_params[:message_body]
     build_phone
     build_message
     choose_provider

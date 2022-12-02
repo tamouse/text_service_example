@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+;# frozen_string_literal: true
 
 class ProviderApiTest < ActiveSupport::TestCase
   attr_reader :client, :provider
@@ -22,13 +22,11 @@ class ProviderApiTest < ActiveSupport::TestCase
   end
 
   test "using a bad phone number gives a 4xx error" do
-    skip "Can't figure out how to force the endpoint to fail"
-    VCR.use_cassette('ProviderApiTest/using a bad phone number gives a 4xx error') do |cass|
+     VCR.use_cassette('ProviderApiTest/using a bad phone number gives a 4xx error') do |cass|
       client.post(phone_number: nil, message_body: nil)
-      binding.pry
+      refute client.success?
       refute_nil client.result
       assert_equal ProviderApi::Client::Result::Failure, client.result.class
-      # refute client.succeeded?
     end
   end
 end

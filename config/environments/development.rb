@@ -3,6 +3,8 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  Rails.application.default_url_options = { host: 'localhost', port: 3000 }
+  
   # In the development environment your application's code is reloaded any time
   # it changes. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
@@ -33,6 +35,9 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  config.action_controller.default_url_options = { host: 'localhost', port: 3000 }
+  config.action_dispatch.default_url_options = { host: 'localhost', port: 3000 }
+
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
@@ -40,6 +45,8 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.perform_caching = false
+
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
@@ -67,4 +74,7 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
+
+  # Hack to get tunneled hosts, aka webhooks, a la ngrok
+  config.hosts << ENV['LOCAL_TUNNEL_HOST'] if ENV['LOCAL_TUNNEL_HOST'].present?
 end
