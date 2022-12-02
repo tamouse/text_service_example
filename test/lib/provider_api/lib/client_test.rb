@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+
+class ProviderApiTest < ActiveSupport::TestCase
+  attr_reader :client, :provider
+
+  setup do
+    @provider = providers(:provider_1)
+    @client = ::ProviderApi::Client.new(endpoint: provider.endpoint, callback: "https://www.example.com/code_test")
+  end
+
+  test "can initialize client with necessary information" do
+    assert provider.endpoint, client.endpoint
+  end
+
+  test "post to endpoint with good phone number works as expected" do
+    VCR.use_cassette('ProviderApiTest/') do
+      phone = "6125551212"
+      message = "Testing the endpoint"
+      client.post(phone_number: phone, message_body: message)
+      refute_nil client.result
+    end
+  end
+end
