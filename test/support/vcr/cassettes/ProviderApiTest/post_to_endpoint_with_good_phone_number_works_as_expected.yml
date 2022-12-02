@@ -1,0 +1,37 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://mock-text-provider.parentsquare.com/provider1
+    body:
+      encoding: UTF-8
+      string: '{"to_number":"6125551212","message":"Testing the endpoint","callback_url":"https://www.example.com/code_test"}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v2.7.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Fri, 02 Dec 2022 01:31:01 GMT
+      content-type:
+      - application/json
+      content-length:
+      - '53'
+      connection:
+      - keep-alive
+      x-amzn-requestid:
+      - dbd3a701-ff0d-4d39-ba94-b2c3050d5baa
+      x-amz-apigw-id:
+      - cfpFQH1WPHcFzAg=
+      x-amzn-trace-id:
+      - Root=1-63895554-1ec3b7bd52f20f8d5e1c8109;Sampled=0
+    body:
+      encoding: UTF-8
+      string: '{"message_id":"81dd5d06-dd9a-40bf-8800-a030eda02f57"}'
+  recorded_at: Fri, 02 Dec 2022 01:31:01 GMT
+recorded_with: VCR 6.1.0

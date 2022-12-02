@@ -36,11 +36,12 @@ module ProviderApi
     end
 
     def prepare_body(phone_number:, message_body:)
-      @request_body = {
-        to_number: phone_number,
-        message: message_body,
-        callback_url: callback
-      }
+      @request_body = {}.tap do |b|
+        # NOTE: doing it this way allows the test to try a failure response from the provider request
+        b[:to_number] = phone_number if phone_number.present?
+        b[:message] = message_body if message_body.present?
+        b[:callback_url] = callback
+      end
     end
 
     def process_response
