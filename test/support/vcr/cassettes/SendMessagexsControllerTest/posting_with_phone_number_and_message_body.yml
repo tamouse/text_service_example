@@ -2,10 +2,10 @@
 http_interactions:
 - request:
     method: post
-    uri: https://mock-text-provider.parentsquare.com/provider1
+    uri: https://mock-text-provider.parentsquare.com/provider2
     body:
       encoding: UTF-8
-      string: '{"to_number":"6125551212","message":"Testing the endpoint","callback_url":"https://www.example.com/code_test"}'
+      string: '{"to_number":"8005551212","message":"Test message","callback_url":"http://localhost:3000/delivery_status"}'
     headers:
       Content-Type:
       - application/json
@@ -17,7 +17,7 @@ http_interactions:
       message: OK
     headers:
       date:
-      - Fri, 02 Dec 2022 00:55:39 GMT
+      - Fri, 02 Dec 2022 22:54:50 GMT
       content-type:
       - application/json
       content-length:
@@ -25,13 +25,13 @@ http_interactions:
       connection:
       - keep-alive
       x-amzn-requestid:
-      - 6881008f-1b4e-4432-a2a3-e56be52dadbd
+      - 1e1102e9-a4ad-44f1-950b-a4304b20fb97
       x-amz-apigw-id:
-      - cfj5oFkTPHcFXjw=
+      - cilI_Hv-PHcFyxg=
       x-amzn-trace-id:
-      - Root=1-63894d0a-48e66d6125b058ea52d5c9e5;Sampled=0
+      - Root=1-638a8239-2bf0bff419856d8d2aadbbc7;Sampled=0
     body:
       encoding: UTF-8
-      string: '{"message_id":"22bf113e-5fae-4b1d-aaf1-f5193df16123"}'
-  recorded_at: Fri, 02 Dec 2022 00:55:39 GMT
+      string: '{"message_id":"63a26065-c91d-45cd-8b61-e1039d878ef0"}'
+  recorded_at: Fri, 02 Dec 2022 22:54:50 GMT
 recorded_with: VCR 6.1.0

@@ -7,6 +7,7 @@ class SendMessageService
                 :client,                # Provider API client
                 :endpoint,              # The Provider API Endpoint to call
                 :message_body,          # Body of the text message
+                :message_guid,          # The GUID of the message returned from the request
                 :phone_number,          # Recipient phone number for the message
                 :provider,              # The chosen provider
                 :success                # Boolean result of the send! operation
@@ -31,11 +32,12 @@ class SendMessageService
   end
 
   def send!
-    if valid!
+    if valid?
       client.post(phone_number: phone_number, message_body: message_body)
       @success = client.success?
       if success?
         update_message
+        @message_guid = @message.message_guid
       else
         copy_errors
       end
@@ -95,7 +97,7 @@ class SendMessageService
       l.success = success
       l.is_valid = success
       l.iteration = l.iteration + 1
-      l.blob = client.result.raw_body
+      l.data = client.result.raw_body
     end
   end
 end

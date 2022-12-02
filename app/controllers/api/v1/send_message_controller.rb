@@ -2,14 +2,14 @@
 
 module Api
   module V1
-    class SendMessagesController < ApiBaseController
+    class SendMessageController < ApiBaseController
       def create
         service = SendMessageService.new(message_params)
         service.send!
         if service.success?
-          render status: :ok, json: service.messages
+          render status: :ok, json: { message_id: service.message_guid }
         else
-          render status: :unprocessible_entity, json: service.errors.detail
+          render status: :unprocessable_entity, json: service.errors.details
         end
       end
 
@@ -17,8 +17,8 @@ module Api
 
       def message_params
         {
-          message_body: permit(:message_body),
-          phone_number: permit(:phone_number)
+          message_body: params.permit(:message_body)[:message_body].to_s,
+          phone_number: params.permit(:phone_number)[:phone_number].to_s
         }
       end
     end

@@ -17,7 +17,7 @@ http_interactions:
       message: Bad Request
     headers:
       date:
-      - Fri, 02 Dec 2022 17:52:15 GMT
+      - Fri, 02 Dec 2022 22:54:48 GMT
       content-type:
       - application/json
       content-length:
@@ -25,13 +25,13 @@ http_interactions:
       connection:
       - keep-alive
       x-amzn-requestid:
-      - e65e6cc5-5bb5-4fbd-adee-bbb2125ad9b1
+      - 8a834737-2106-425e-aef7-019b0a5168a4
       x-amz-apigw-id:
-      - ch40ZF1pPHcFs_g=
+      - cilI3E0KvHcFQPg=
       x-amzn-trace-id:
-      - Root=1-638a3b4f-3216228a5c34905436a9449f;Sampled=0
+      - Root=1-638a8238-0810c33b1b32afea48e58733;Sampled=0
     body:
       encoding: UTF-8
       string: '{"error":"to_number is required"}'
-  recorded_at: Fri, 02 Dec 2022 17:52:15 GMT
+  recorded_at: Fri, 02 Dec 2022 22:54:48 GMT
 recorded_with: VCR 6.1.0
