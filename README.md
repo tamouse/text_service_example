@@ -26,7 +26,7 @@ The typical dependencies for a modern Rails project
 
 Other dependencies are handled by the Gemfile and package.json.
 
-## Getting is running ##
+## Getting it running ##
 
 You're going to need 3 terminal windows for all of this:
 
