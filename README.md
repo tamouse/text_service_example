@@ -98,7 +98,13 @@ There are other tracking mechanisms in play as well to monitor and adjust the fe
 
 ### Models Diagram
 
+Original diagram:
+
 ![A diagram of the models used in thiw feature and their relationship to each other](./app/assets/images/model_diagram.jpg "Model Diagram")
+
+Final diagram:
+
+![An updated diagram of the models used in thiw feature and their relationship to each other](./app/assets/images/model-diagram-updated.jpg.jpg "Update Model Diagram")
 
 1. `User` holds just enough information to validate the API request using HTTP Basic auth. For the demo, there's only one user.
 2. `Message` contains the message id and body, as well as the key of the phone number.
