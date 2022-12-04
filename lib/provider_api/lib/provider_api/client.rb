@@ -2,31 +2,27 @@
 
 module ProviderApi
   class Client
-
     include ProviderApi::Utils
     
     attr_reader :request_body           # Message request_body of the request
     attr_reader :callback               # The URL to tell the provider to callback after the message iks sent
     attr_reader :endpoint               # Endpoint for provider
+    attr_reader :message_body           # Message being sent
+    attr_reader :phone_number           # Number to receive the message
     attr_reader :response               # Holds the response from the endpoint
     attr_accessor :result               # Result of the actions, Success or Failure
 
     def initialize(endpoint:, callback:)
       @endpoint = endpoint
       @callback = callback
+      @errors = []
     end
 
     def post(phone_number:, message_body:)
-      prepare_body(phone_number: phone_number, message_body: message_body)
-      @response = client.post(endpoint) do |req|
-        req.body = request_body.to_json
-      end
+      @phone_number = phone_number
+      @message_body = message_body
+      @response = post_to_service(phone_number: phone_number, message_body: message_body)
       process_response
-      self
-    end
-
-    def success?
-      result.class.name.demodulize == "Success"
     end
 
     def client
@@ -37,8 +33,14 @@ module ProviderApi
       )
     end
 
-    def prepare_body(phone_number:, message_body:)
-      @request_body = {
+    def post_to_service(phone_number:, message_body:)
+      client.post(endpoint) do |req|
+        req.body = body.to_json
+      end
+    end
+
+    def body
+      {
         to_number: phone_number,
         message: message_body,
         callback_url: callback
@@ -55,5 +57,10 @@ module ProviderApi
           nil
         end
     end
+
+    def success
+      result.class.name.demodulize == "Success"
+    end
+    alias_method :success?, :success
   end
 end

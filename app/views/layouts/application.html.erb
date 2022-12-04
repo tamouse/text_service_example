@@ -11,6 +11,22 @@
   </head>
 
   <body>
-    <%= yield %>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <%= render "layouts/header" %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <%= yield %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <%= render "layouts/footer" %>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

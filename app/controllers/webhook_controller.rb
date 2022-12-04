@@ -1,16 +1,24 @@
 class WebhookController < ApplicationController
+
+  protect_from_forgery with: :null_session
+  
   def create
-    if WebhookService.update_message(**message_params)
+    if WebhookService.process_webhook(**message_params)
       head :ok
     else
-      head :error
+      head :unprocessable_entity
     end
   end
 
   private
 
   def message_params
-    params.permit(:status, :message_id)
+    params.require(:status)
+    params.require(:message_id)
+    {
+      status: params[:status],
+      message_guid: params[:message_id]
+    }
   end
 
 end

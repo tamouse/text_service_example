@@ -2,10 +2,10 @@
 http_interactions:
 - request:
     method: post
-    uri: https://mock-text-provider.parentsquare.com/provider1
+    uri: https://mock-text-provider.parentsquare.com/provider2
     body:
       encoding: UTF-8
-      string: '{"to_number":null,"message":null,"callback_url":"https://www.example.com/code_test"}'
+      string: '{"to_number":"","message":"Test message","callback_url":"http://localhost:3000/delivery_status"}'
     headers:
       Content-Type:
       - application/json
@@ -17,7 +17,7 @@ http_interactions:
       message: Bad Request
     headers:
       date:
-      - Sat, 03 Dec 2022 19:56:42 GMT
+      - Sat, 03 Dec 2022 19:56:41 GMT
       content-type:
       - application/json
       content-length:
@@ -25,13 +25,13 @@ http_interactions:
       connection:
       - keep-alive
       x-amzn-requestid:
-      - 68290f74-a00b-4df0-a265-713c26f5c934
+      - c0a10843-4ab2-48de-9dd7-45be2d833ed9
       x-amz-apigw-id:
-      - cld_PEt0PHcFRrw=
+      - cld-8FgOvHcFprw=
       x-amzn-trace-id:
-      - Root=1-638ba9fa-1f4c1ab979f226105887e44c;Sampled=0
+      - Root=1-638ba9f9-7141a5286032babc285d0a20;Sampled=0
     body:
       encoding: UTF-8
       string: '{"error":"to_number is required"}'
-  recorded_at: Sat, 03 Dec 2022 19:56:42 GMT
+  recorded_at: Sat, 03 Dec 2022 19:56:40 GMT
 recorded_with: VCR 6.1.0

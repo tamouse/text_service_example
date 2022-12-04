@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+require "test_helper"
+
+class RetryServiceTest < ActiveSupport::TestCase
+  attr_accessor :message # This is one that bit me, there are probably others. This might be a bad style as a result
+
+  setup do
+    @message = messages(:message_1)
+  end
+
+  test "test something with message" do
+    that = 'that'
+    assert_equal 'this', that # <- This won't work anymore because the Minitest::Test internal identifier is overridden with the accessor fuctions
+  end
+end

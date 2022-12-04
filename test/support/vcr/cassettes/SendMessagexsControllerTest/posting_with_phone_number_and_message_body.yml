@@ -17,7 +17,7 @@ http_interactions:
       message: OK
     headers:
       date:
-      - Fri, 02 Dec 2022 22:54:50 GMT
+      - Sat, 03 Dec 2022 19:56:40 GMT
       content-type:
       - application/json
       content-length:
@@ -25,13 +25,47 @@ http_interactions:
       connection:
       - keep-alive
       x-amzn-requestid:
-      - 1e1102e9-a4ad-44f1-950b-a4304b20fb97
+      - 84aef081-3214-4a79-8853-5a674ec82ef5
       x-amz-apigw-id:
-      - cilI_Hv-PHcFyxg=
+      - cld-vFakvHcFUkQ=
       x-amzn-trace-id:
-      - Root=1-638a8239-2bf0bff419856d8d2aadbbc7;Sampled=0
+      - Root=1-638ba9f7-0e11022f092e8f7b337ccf6f;Sampled=0
     body:
       encoding: UTF-8
-      string: '{"message_id":"63a26065-c91d-45cd-8b61-e1039d878ef0"}'
-  recorded_at: Fri, 02 Dec 2022 22:54:50 GMT
+      string: '{"message_id":"e9306646-8b78-4b0d-b952-d44ae2a457e3"}'
+  recorded_at: Sat, 03 Dec 2022 19:56:40 GMT
+- request:
+    method: post
+    uri: https://mock-text-provider.parentsquare.com/provider1
+    body:
+      encoding: UTF-8
+      string: '{"to_number":"8005551212","message":"Test message","callback_url":"http://localhost:3000/delivery_status"}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Faraday v2.7.1
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Sat, 03 Dec 2022 23:30:53 GMT
+      content-type:
+      - application/json
+      content-length:
+      - '53'
+      connection:
+      - keep-alive
+      x-amzn-requestid:
+      - 0d88bf79-968a-4343-ab7f-216d265d83f3
+      x-amz-apigw-id:
+      - cl9W9FwxPHcF7ng=
+      x-amzn-trace-id:
+      - Root=1-638bdc2c-199998a36e92fa4a457de729;Sampled=0
+    body:
+      encoding: UTF-8
+      string: '{"message_id":"82315c98-4772-4898-986a-2954d5defc8d"}'
+  recorded_at: Sat, 03 Dec 2022 23:30:53 GMT
 recorded_with: VCR 6.1.0

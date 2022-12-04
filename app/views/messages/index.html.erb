@@ -1,0 +1,41 @@
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">Messages</h1>
+    </div>
+    <div class="card-body">
+      <p class="card-text">Messages that have been sent.</p>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>GUID</th>
+            <th>Number</th>
+            <td>Body</td>
+            <th>Status</th>
+            <th>Attempts</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @messages.each do |message| %>
+            <tr>
+              <td><%=message.id %></td>
+              <td><%=message.message_guid %></td>
+              <td><%=message.phone.number %></td>
+              <td><%=message.message_body.truncate(30) %></td>
+              <td><%=message.status %></td>
+              <td><%=message.activity_logs.count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4">From <%=l earliest_message, format: :long %> to <%= l latest_message, format: :long %></td>
+          </tr>
+        </tfoot>
+      </table>
+      <%= render "layouts/coming_soon" %>
+    </div>
+  </div>
+</div>

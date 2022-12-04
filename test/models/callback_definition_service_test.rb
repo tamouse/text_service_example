@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CallbackDefinitionServiceTest < ActiveSupport::TestCase
-  teardown do
+  setup do
     ENV.delete('LOCAL_TUNNEL_HOST')
     ENV.delete('WEBHOOK_SITE')
   end

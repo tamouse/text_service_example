@@ -1,33 +1,35 @@
 <div class="container-fluid">
   <div class="card">
     <div class="card-header">
-      <h1 class="card-title">Phones</h1>
+      <h1 class="card-title">Providers</h1>
     </div>
     <div class="card-body">
-      <p class="card-text">Phones that have sent messages.</p>
+      <p class="card-text">Providers.</p>
 
       <table class="table">
         <thead>
           <tr>
             <th>Id</th>
-            <th>Number</th>
+            <th>Endpoint</th>
             <th>Status</th>
-            <th>Msg Count</th>
+            <th>Weight</th>
+            <th>Log count</th>
           </tr>
         </thead>
         <tbody>
-          <% @phones.each do |phone| %>
+          <% @providers.each do |provider| %>
             <tr>
-              <td><%=phone.id %></td>
-              <td><%=phone.number %></td>
-              <td><%=phone.status %></td>
-              <td><%=phone.messages.count %></td>
+              <td><%=provider.id %></td>
+              <td><%=provider.endpoint %></td>
+              <td><%=provider.status %></td>
+              <td><%=provider.weight %></td>
+              <td><%=provider.activity_logs.count %></td>
             </tr>
           <% end %>
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="4">&nbsp;</td>
+            <td>&nbps;</td>
           </tr>
         </tfoot>
       </table>

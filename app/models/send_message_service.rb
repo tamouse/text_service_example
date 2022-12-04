@@ -3,64 +3,32 @@
 class SendMessageService
   include ActiveModel::Model
 
-  attr_accessor :callback,              # The callback to pass to the send request
-                :client,                # Provider API client
-                :endpoint,              # The Provider API Endpoint to call
-                :message_body,          # Body of the text message
-                :message_guid,          # The GUID of the message returned from the request
-                :phone_number,          # Recipient phone number for the message
-                :provider,              # The chosen provider
-                :success                # Boolean result of the send! operation
+  attr_accessor :message
 
-  validates :callback, presence: true
-  validates :client, presence: true
-  validates :endpoint, presence: true
-  validates :message_body, presence: true
-  validates :phone_number, presence: true
+  delegate :success, :success?, to: :client, allow_nil: true
+  delegate :message_guid, to: :message, allow_nil: true
+  
   validate do
-    errors.add(:phone_number, 'must be active') unless @phone.status == Phone::STATUS_ACTIVE
+    errors.add(:phone_number, 'must be active') unless message.phone.status == Phone::STATUS_ACTIVE
   end
 
-  def initialize(message_params)
-    @phone_number = message_params[:phone_number]
-    @message_body = message_params[:message_body]
-    build_phone
-    build_message
-    choose_provider
-    determine_callback
-    set_endpoint
+  def initialize(message:)
+    @message = message
   end
 
   def send!
     if valid?
-      client.post(phone_number: phone_number, message_body: message_body)
-      @success = client.success?
+      message.update_column(:iteration, message.iteration + 1)
+      client.post(phone_number: message.phone.number, message_body: message.message_body)
       if success?
         update_message
-        @message_guid = @message.message_guid
       else
         copy_errors
       end
-    else
-      @success = false
     end
   end
 
-  def build_message
-    @message = Message.create do |m|
-      m.phone = @phone
-      m.message_body = message_body
-      m.status = Message::STATUS_SENDING
-    end
-  end
-
-  def build_phone
-    @phone = Phone.find_or_create_by(number: phone_number) do |p|
-      p.status = Phone::STATUS_ACTIVE
-    end
-  end
-
-  def choose_provider
+  def provider
     @provider ||= ProviderSelectorService.provider
   end
 
@@ -72,31 +40,27 @@ class SendMessageService
   end
 
   def copy_errors
-    errors.add(:base, client.result.parsed_body.dig("error"))
+    errors.add(:client, client.result.parsed_body.dig("error"))
   end
 
-  def determine_callback
+  def callback
     @callback ||= CallbackDefinitionService.callback
   end
 
-  def set_endpoint
+  def endpoint
     @endpoint ||= provider.endpoint
-  end
-
-  def success?
-    !!success
   end
 
   def update_message
     guid = client.result.parsed_body.dig("message_id")
-    @message.update(
+    message.update(
       message_guid: guid,
-      status: success? ? Message::STATUS_SENT : Message::STATUS_ERROR      
+      status: success? ? Message::STATUS_SENT : Message::STATUS_ERROR
     )
-    @message.activity_logs.create do |l|
+    message.activity_logs.create do |l|
+      l.origin = self.class.name
       l.success = success
       l.is_valid = success
-      l.iteration = l.iteration + 1
       l.data = client.result.raw_body
     end
   end

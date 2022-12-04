@@ -17,7 +17,7 @@ http_interactions:
       message: OK
     headers:
       date:
-      - Fri, 02 Dec 2022 22:54:47 GMT
+      - Sat, 03 Dec 2022 19:56:42 GMT
       content-type:
       - application/json
       content-length:
@@ -25,13 +25,13 @@ http_interactions:
       connection:
       - keep-alive
       x-amzn-requestid:
-      - b8b0b365-25dc-41b9-89b4-078d15b56298
+      - 51f66a3c-60b1-4bdf-9aba-bdd61a364b96
       x-amz-apigw-id:
-      - cilIoEc4PHcFpiQ=
+      - cld_BFUGPHcFiyQ=
       x-amzn-trace-id:
-      - Root=1-638a8237-1a9db92d2543d997497e1eb6;Sampled=0
+      - Root=1-638ba9f9-68e551b32149c94a3054f17e;Sampled=0
     body:
       encoding: UTF-8
-      string: '{"message_id":"b71363ea-ef74-4f79-be3f-43095c083997"}'
-  recorded_at: Fri, 02 Dec 2022 22:54:47 GMT
+      string: '{"message_id":"0592a91a-7735-4b92-8d8e-51dbe74f8a16"}'
+  recorded_at: Sat, 03 Dec 2022 19:56:42 GMT
 recorded_with: VCR 6.1.0

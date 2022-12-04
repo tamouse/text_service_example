@@ -1,0 +1,2 @@
+class RetryService < ApplicationRecord
+end
