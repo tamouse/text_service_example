@@ -104,7 +104,7 @@ Original diagram:
 
 Final diagram:
 
-![An updated diagram of the models used in thiw feature and their relationship to each other](./app/assets/images/model-diagram-updated.jpg.jpg "Update Model Diagram")
+![An updated diagram of the models used in thiw feature and their relationship to each other](./app/assets/images/model-diagram-updated.jpg "Update Model Diagram")
 
 1. `User` holds just enough information to validate the API request using HTTP Basic auth. For the demo, there's only one user.
 2. `Message` contains the message id and body, as well as the key of the phone number.
