@@ -9,7 +9,7 @@ class WebhookControllerTest < ActionDispatch::IntegrationTest
     msg.update_column(:message_guid, guid)
   end
   
-  test "post a vaoid payload" do
+  test "post a valid payload" do
     params = {
       status: 'delivered',
       message_id: msg.message_guid

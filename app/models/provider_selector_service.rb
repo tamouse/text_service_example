@@ -8,7 +8,7 @@ class ProviderSelectorService
   end
 
   def initialize
-    @providers = Provider.where(status: Provider::STATUS_ACTIVE)
+    @providers = Provider.active
   end
 
   def provider

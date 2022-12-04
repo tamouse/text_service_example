@@ -3,17 +3,29 @@
 class SendMessageService
   include ActiveModel::Model
 
-  attr_accessor :message
+  attr_accessor :message,
+                :phone,
+                :provider,
+                :endpoint,
+                :callback
 
   delegate :success, :success?, to: :client, allow_nil: true
   delegate :message_guid, to: :message, allow_nil: true
   
-  validate do
-    errors.add(:phone_number, 'must be active') unless message.phone.status == Phone::STATUS_ACTIVE
-  end
+  validates :message, presence: true
+  validates :phone, presence: true
+  validate { errors.add(:phone, :inactive) unless message.phone.status == Phone::STATUS_ACTIVE }
+  validate { errors.add(:provider, :unavailable) unless provider.present? }
+
+  validates :endpoint, presence: true
+  validates :callback, presence: true
 
   def initialize(message:)
     @message = message
+    @phone = @message&.phone
+    @provider = ProviderSelectorService.provider
+    @endpoint = @provider&.endpoint
+    @callback = CallbackDefinitionService.callback
   end
 
   def send!
@@ -26,10 +38,8 @@ class SendMessageService
         copy_errors
       end
     end
-  end
-
-  def provider
-    @provider ||= ProviderSelectorService.provider
+    log_activity
+    success
   end
 
   def client
@@ -43,12 +53,39 @@ class SendMessageService
     errors.add(:client, client.result.parsed_body.dig("error"))
   end
 
-  def callback
-    @callback ||= CallbackDefinitionService.callback
-  end
 
-  def endpoint
-    @endpoint ||= provider.endpoint
+  def log_activity
+    message.activity_logs.create do |log|
+      log.origin = self.class.name
+      log.success = success
+      log.is_valid = success
+      log.data = {
+        message: message.as_json,
+        phone: message.phone.as_json,
+        provider: provider.as_json,
+        callback: callback.as_json,
+        client: client.as_json,
+        result: client.result.as_json,
+        raw_body: client.result.raw_body,
+        errors: errors.as_json
+      }.to_json
+    end
+
+    message.phone.activity_logs.create do |log|
+      log.origin = self.class.name
+      log.success = success
+      log.is_valid = success
+      log.data = {
+        message: message.as_json,
+        phone: message.phone.as_json,
+        provider: provider.as_json,
+        callback: callback.as_json,
+        client: client.as_json,
+        result: client.result.as_json,
+        raw_body: client.result.raw_body,
+        errors: errors.as_json
+      }.to_json
+    end
   end
 
   def update_message
@@ -57,11 +94,5 @@ class SendMessageService
       message_guid: guid,
       status: success? ? Message::STATUS_SENT : Message::STATUS_ERROR
     )
-    message.activity_logs.create do |l|
-      l.origin = self.class.name
-      l.success = success
-      l.is_valid = success
-      l.data = client.result.raw_body
-    end
   end
 end

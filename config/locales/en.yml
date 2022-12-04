@@ -31,3 +31,13 @@
 
 en:
   hello: "Hello world"
+  activemodel:
+    errors:
+      models:
+        send_message_service:
+          attributes:
+            phone:
+              inactive: 'must be active'
+            provider:
+              unavailable: 'no providers are available'
+        
