@@ -36,20 +36,22 @@ You're going to need 3 terminal windows for all of this:
 
 To get everything in order, run:
 
-    $ bundle install
-    $ yarn install 
-    $ bundle exec rails db:migrate:reset
-    $ bundle exec rails db:fixtures:load
-    
-    # bring up the tunneling proxy, ngrok, in another terminal window
-    $ ngrok http 3000
-    
-    # back in the original terminal window
-    $ export RAILS_DEVELOPMENT_HOSTS="<the hostname part of the ngrok URL>"
-    $ bundle exec rails server
-    
-    # in a new terminal window
-    $ open http://localhost:3000
+``` shell
+$ bundle install
+$ yarn install 
+$ bundle exec rails db:migrate:reset
+$ bundle exec rails db:fixtures:load
+
+# bring up the tunneling proxy, ngrok, in another terminal window
+$ ngrok http 3000
+
+# back in the original terminal window
+$ export RAILS_DEVELOPMENT_HOSTS="<the hostname part of the ngrok URL>"
+$ bundle exec rails server
+
+# in a new terminal window
+$ open http://localhost:3000
+```
     
 See "Live testing" below for a couple of ways to send messages to the API.
     
