@@ -102,20 +102,17 @@ There are other tracking mechanisms in play as well to monitor and adjust the fe
 
 1. `User` holds just enough information to validate the API request using HTTP Basic auth. For the demo, there's only one user.
 2. `Message` contains the message id and body, as well as the key of the phone number.
-3. `MessageTry` contains response data associated with the message, from either the initial request or later in the cycle from a web hook POST request from the provider. Changed from `MessageError` in the diagram because it shouldn't just contain errors but successful information as well.
 4. `Phone` holds the  phone number for a requested measure, as well as status, validity.
-5. `PhoneError` contains information about errors related to the phone number.
 6. `Provider` contains the information needed to interact with providers and keep errors, statistics, and status.
-7. `ProviderError` contains the details of provider-based errors. Provider errors are ones that return 5xx status codes, timeouts, and the like. Generally things that aren't messsage errors would be provider errors.
+7. `ActivityLog` contains more detailed information about each use of `Phone`, `Message`, and `Provider`
 
-### Services
+### Services Classes
 
 To keep both controllers and persistence models thin, I'm using service classes that perform the logic of the application.
 
-
 ### Libraries
 
-To isolate the interface with the service providers, I'm using a library to generalize the interface and allows for delete-ability / replacement.
+To isolate the interface with the service providers, I'm using a library to generalize the interface for calling the providers, which allows for delete-ability / replacement.
 
 #### provider_api
 
