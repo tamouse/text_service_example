@@ -137,3 +137,11 @@ file `'./Gemfile'`:
 gem 'provider_api', path: './lib/provider_api/'
 ```
 
+
+## Left to do:
+
+1. If you receive errors from the SMS providers, make sure you try it a few times. They intentionally return errors part of the time. Also double check that your request format meets the specification.
+2. If a provider is down (returns a 5xx status code), retry through the other provider. The load balancing part of this is implemented, but updating the provider if the service gets a 5xx error is not,
+3. If no provider is available, the message is considered failed. Your application may handle this in whatever way is appropriate for your API. This might already work, but it also might produce an error if the active provider list is empty.
+2. Implement widget to send a message from the browser
+3. Stand up the app on a real server
