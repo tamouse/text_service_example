@@ -1,8 +1,16 @@
-# TextServiceExam0le
+# TextServiceExample
 
 This is a coding example for creating a texting feature in a Rails app. It's only about the feature here, but normally this would be added to an existing app.
 
-My approach is to design the controller actions and models to perform the flow of a text message request coming in, getting handed over to text message service provider, and tracking successes, failures, errors, and the like, as well as providing a rudimentary load balancing between the providers.
+## Approach ##
+
+My approach was to develop the rudimentary client that could talk to the provider serices by posting a message, and getting back the response.
+
+Next came the models for storing data and models for acting on the data, aka services.
+
+Next came the controllers for getting the new message and handing it off to the service for sending a message, and the controller for receiving a webhook from the provider to process the result of sending the message, including updating models, adding logs and so on.
+
+Finally cam the controllers and views for listing the providers, messages, and phone numbers. 
 
 The specifications are difined in the problem description, and I won't necessarily repeat any more.
 
@@ -14,13 +22,36 @@ The typical dependencies for a modern Rails project
 - Ruby 3.1.1
 - Bundler 2.3.7
 - Rails 7.0.4
+- ngrok (from ngrok.io) - used to provide a tunnel that can be used for webhook callbacks
 
 Other dependencies are handled by the Gemfile and package.json.
+
+## Getting is running ##
+
+You're going to need 3 terminal windows for all of this:
+
+1. for the Rails server
+2. for the ngrok server
+3. for doing things from the command line
 
 To get everything in order, run:
 
     $ bundle install
     $ yarn install 
+    $ bundle exec rails db:migrate:reset
+    $ bundle exec rails db:fixtures:load
+    
+    # bring up the tunneling proxy, ngrok, in another terminal window
+    $ ngrok http 3000
+    
+    # back in the original terminal window
+    $ export RAILS_DEVELOPMENT_HOSTS="<the hostname part of the ngrok URL>"
+    $ bundle exec rails server
+    
+    # in a new terminal window
+    $ open http://localhost:3000
+    
+See "Live testing" below for a couple of ways to send messages to the API.
     
 ## Databases
 
@@ -145,3 +176,26 @@ gem 'provider_api', path: './lib/provider_api/'
 3. If no provider is available, the message is considered failed. Your application may handle this in whatever way is appropriate for your API. This might already work, but it also might produce an error if the active provider list is empty.
 2. Implement widget to send a message from the browser
 3. Stand up the app on a real server
+
+## Thoughts about the exercise ##
+
+I appreciated being able to work through a more real-world example clearly related to what Parentsquare's product needs to do. I really enjoyed myself, being able to stretch out and really show how I think this would work in a production environment.
+
+I headed into this with the idea that it would take 3 days, forgetting the time I needed to set up a project and the development environment. Equally, I intended to put this up on a server someplace, but finding free offerings for a Rails app took longer than I'd hoped. I settled for trying to create a suitabkle server on a five buck per month hosting service through Gandi.net, but that's probably a coupoe more days as well.
+
+There are some features that aren't done that were in the spec.
+
+Doing a retry on a failed message should be fairly easy. Included an iteration field in the message to keep track of how many times it's been tried. I would set a constant to determine the max number of retries, and skip the message after that.
+
+I also am not bouncing between providers when a failure happens. This would take some work to figure this out given my implementation. The message log should include the provider used for the send attempt so a different one can be chosen. It would make the weighted randon choice a bit more difficult. The way I'd approach it is reject it after getting the set of active providers, then doing the weighted random select on the rest of them.
+
+I'm not sure what would happen if there are no providers to choose from currently. The code probably doesn't handle a `nil` provider and that's a possibility in any case.
+
+There's nothing yet in code to mark a provider as "down" or "inactive" upon receipt of a 500 error. This wouldn't be hard to do as the information is passed back up to where it can be used.
+
+The architecture is written as though it can run in the time of a application server (e.g. puma). Given the toy nature of things, it likely will. However, many of the operations would be better done in the background, leaving the controllers free to return quickly to the callers. Since the operations are written as service objects, they can be called from background jobs to complete their tasks. I would likely have to add more robust code for some of the services as I wasn't thinking of them not being able to return info to the caller; matching up messages with the GUID returned from the provider could be tricky. If I were to write a messages API, the original caller would need to keep some info about the original message to get more detailed info, perhaps just returning the `message.id` field (or some sort of obfuscated string)?
+
+Putting the webhook request into a background job should be quite easy, just passing along the `status` and provider's `message_id`. But again, not knowing the outcome of that means always returning `:ok`. I wasn't sure if the webhook request does anything with an `:unprocessable_entity` response (like retrying) but it would be a safe bet that some do.
+
+I wanted to provide a little widget that could be popped up to send the new message AJAX request, but right now, I'd probably have to a day to refresh myself on doing that in JavaScript, since it's been a minute since I had to build something like that.
+
