@@ -106,7 +106,7 @@ Final diagram:
 
 ![An updated diagram of the models used in thiw feature and their relationship to each other](./app/assets/images/model-diagram-updated.jpg "Update Model Diagram")
 
-1. `User` holds just enough information to validate the API request using HTTP Basic auth. For the demo, there's only one user.
+1. `User` holds just enough information to validate the API request using HTTP Basic auth. For the demo, there's only one user. Did not end up using this or doing any authorization of the app endpoints.
 2. `Message` contains the message id and body, as well as the key of the phone number.
 4. `Phone` holds the  phone number for a requested measure, as well as status, validity.
 6. `Provider` contains the information needed to interact with providers and keep errors, statistics, and status.
