@@ -31,6 +31,14 @@ Stand up the database for the first time with:
     $ rails db:migrate
     $ rails db:fixtures:load
 
+The following will tear down the databases and reset everything:
+
+    $ rails db:migrate:reset
+    $ rails db:fixtures:load
+
+*(Good when you're futzing with migrations, or mess up the data somehow.)*
+
+
 ## Testing
 
 I chose to use Minitest and ActiveSupport::TestCase to keep testing fast and simple. I'm also following a philosophy for testing in the demo to test only code written for the demo, and not deal with verifying everything else one might do with models, controllers, services, libraries, and the like.
@@ -38,6 +46,36 @@ I chose to use Minitest and ActiveSupport::TestCase to keep testing fast and sim
 Run tests with:
 
     $ rails test
+    
+### Live testing ###
+
+This is for doing some live testing where you don't want the VCR cassettes to get in your way.
+
+From the command line, hit the send API from `curl`:
+
+``` shell
+curl -is -X POST \
+     -H 'Content-type: application/json' \
+     -d '{"phone_number":"8005551212","message_body":"a message from curl"}' \
+     'http://localhost:3000/api/v1/send.json'
+```
+
+From the Rails console (pry) :
+
+``` ruby
+# Create a phone, then a message
+p = Phone.create(number: "8005551212", status: "active")
+m = Message.create(phone_id: p.id, message_body: "a message from rails console", status: "sending")
+
+# Create a service instance
+s = SendMessageService.new(message: m)
+
+# Send the message
+s.send!
+
+# Explore the result
+s.client.result
+```
 
 ## Development
 

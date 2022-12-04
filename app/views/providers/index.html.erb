@@ -14,6 +14,8 @@
             <th>Status</th>
             <th>Weight</th>
             <th>Log count</th>
+            <th>Created</th>
+            <th>Last updated</th>
           </tr>
         </thead>
         <tbody>
@@ -24,6 +26,8 @@
               <td><%=provider.status %></td>
               <td><%=provider.weight %></td>
               <td><%=provider.activity_logs.count %></td>
+              <td><%=l provider.created_at, format: :short %></td>
+              <td><%=l provider.updated_at, format: :short %></td>
             </tr>
           <% end %>
         </tbody>

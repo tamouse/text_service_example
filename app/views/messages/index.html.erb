@@ -15,6 +15,8 @@
             <td>Body</td>
             <th>Status</th>
             <th>Attempts</th>
+            <th>Created</th>
+            <th>Last updated</th>
           </tr>
         </thead>
         <tbody>
@@ -26,6 +28,8 @@
               <td><%=message.message_body.truncate(30) %></td>
               <td><%=message.status %></td>
               <td><%=message.activity_logs.count %></td>
+              <td><%=l message.created_at, format: :short %></td>
+              <td><%=l message.updated_at, format: :short %></td>
             </tr>
           <% end %>
         </tbody>
