@@ -22,7 +22,7 @@ The typical dependencies for a modern Rails project
 - Ruby 3.1.1
 - Bundler 2.3.7
 - Rails 7.0.4
-- ngrok (from ngrok.io) - used to provide a tunnel that can be used for webhook callbacks
+- ngrok (from [ngrok.io](https://ngrok.io "Opening a tunnel to your local app")) - used to provide a tunnel that can be used for webhook callbacks
 
 Other dependencies are handled by the Gemfile and package.json.
 
