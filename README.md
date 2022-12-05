@@ -26,33 +26,58 @@ The typical dependencies for a modern Rails project
 
 Other dependencies are handled by the Gemfile and package.json.
 
+## Installation
+
+Assuming you've installed the dependencies listed above,
+clone the repo to your working machine
+
+``` shell
+git clone git@github.com:tamouse/text_service_example.git
+cd text_message_servide
+bundle install
+yarn install
+```
 ## Getting it running ##
 
 You're going to need 3 terminal windows for all of this:
 
-1. for the Rails server
+1. for doing things from the command line
 2. for the ngrok server
-3. for doing things from the command line
+3. for the Rails server
 
 To get everything in order, run:
 
+*Window 1 - command line stuff*:
 ``` shell
-$ bundle install
-$ yarn install 
 $ bundle exec rails db:migrate:reset
 $ bundle exec rails db:fixtures:load
+```
 
+*Window 2 - ngrok*:
+``` shell
 # bring up the tunneling proxy, ngrok, in another terminal window
 $ ngrok http 3000
+```
 
-# back in the original terminal window
-$ export RAILS_DEVELOPMENT_HOSTS="<the hostname part of the ngrok URL>"
+From the ngrok window, copy the *hostname* part of the URL (omit the "https://")
+
+*Window 3 - rails server*:
+
+``` shell
+$ export RAILS_DEVELOPMENT_HOSTS="<paste in the hostname part of the ngrok URL>"
 $ bundle exec rails server
+```
 
-# in a new terminal window
+*Back on Window 1*:
+
+``` shell
 $ open http://localhost:3000
 ```
-    
+
+Or just open a browser window and go to "http://localhost:3000".
+
+You can also put the full ngrok URL in a browser window and get to the app that way,
+
 See "Live testing" below for a couple of ways to send messages to the API.
     
 ## Databases
@@ -188,11 +213,11 @@ gem 'provider_api', path: './lib/provider_api/'
 
 ## Left to do:
 
-1. ~~If you receive errors from the SMS providers, make sure you try it a few times. They intentionally return errors part of the time. Also double check that your request format meets the specification.~~ Happy to say this now works.
-2. If a provider is down (returns a 5xx status code), retry through the other provider. The load balancing part of this is implemented, but updating the provider if the service gets a 5xx error is not,
+1. ~~If you receive errors from the SMS providers, make sure you try it a few times. They intentionally return errors part of the time. Also double check that your request format meets the specification.~~ **ETA:** Happy to say this now works.
+2. ~~If a provider is down (returns a 5xx status code), retry through the other provider.~~ The load balancing part of this is implemented, ~~but updating the provider if the service gets a 5xx error is not~~. **ETA:** This is actually working
 3. ~~If no provider is available, the message is considered failed. Your application may handle this in whatever way is appropriate for your API.~~ This might already work, but it also might produce an error if the active provider list is empty. **ETA:** this works as expected now.
-2. Implement widget to send a message from the browser
-3. Stand up the app on a real server
+4. Implement widget to send a message from the browser
+5. Stand up the app on a real server
 
 ## Thoughts about the exercise ##
 
@@ -204,13 +229,13 @@ There are some features that aren't done that were in the spec.
 
 Doing a retry on a failed message should be fairly easy. Included an iteration field in the message to keep track of how many times it's been tried. I would set a constant to determine the max number of retries, and skip the message after that. **ETA:** This has been implemented.
 
-I also am not bouncing between providers when a failure happens. This would take some work to figure this out given my implementation. The message log should include the provider used for the send attempt so a different one can be chosen. It would make the weighted randon choice a bit more difficult. The way I'd approach it is reject it after getting the set of active providers, then doing the weighted random select on the rest of them. **ETA:** I've verified the code to pick the provider will work with one or both providers out of commission, and the consumer wson't validate if the provider in `nil`, but nothing then marks the message status. **ETA:** happy to say this now works, and a retry can happen without the previously used provider. Perhaps it would be better to make it all previous providers, but right now it's just the last one.
+I also am not bouncing between providers when a failure happens. This would take some work to figure this out given my implementation. The message log should include the provider used for the send attempt so a different one can be chosen. It would make the weighted randon choice a bit more difficult. The way I'd approach it is reject it after getting the set of active providers, then doing the weighted random select on the rest of them. **ETA:** I've verified the code to pick the provider will work with one or both providers out of commission, and the consumer won't validate if the provider in `nil`, ~~but nothing then marks the message status~~. **ETA:** happy to say this now works, and a retry can happen without the previously used provider. Perhaps it would be better to make it all previous providers, but right now it's just the last one.
 
 I'm not sure what would happen if there are no providers to choose from currently. The code probably doesn't handle a `nil` provider and that's a possibility in any case.
 
-There's nothing in code to mark a provider as "down" or "inactive" upon receipt of a 500 error. This wouldn't be hard to do as the information is passed back up to where it can be used.
+~~There's nothing in code to mark a provider as "down" or "inactive" upon receipt of a 500 error. This wouldn't be hard to do as the information is passed back up to where it can be used~~. **ETA:** Working.
 
-The architecture is written as though it can run in the time of a application server (e.g. puma). Given the toy nature of things, it likely will. However, many of the operations would be better done in the background, leaving the controllers free to return quickly to the callers. Since the operations are written as service objects, they can be called from background jobs to complete their tasks. I would likely have to add more robust code for some of the services as I wasn't thinking of them not being able to return info to the caller; matching up messages with the GUID returned from the provider could be tricky. If I were to write a messages API, the original caller would need to keep some info about the original message to get more detailed info, perhaps just returning the `message.id` field (or some sort of obfuscated string)?
+The architecture is written as though it can run within the time limit of a application server (e.g. puma). Given the toy nature of things, it likely will. However, many of the operations would be better done in the background, leaving the controllers free to return quickly to the callers. Since the operations are written as service objects, they can be called from background jobs to complete their tasks. I would likely have to add more robust code for some of the services as I wasn't thinking of them not being able to return info to the caller; matching up messages with the GUID returned from the provider could be tricky. If I were to write a messages API, the original caller would need to keep some info about the original message to get more detailed info, perhaps just returning the `message.id` field (or some sort of obfuscated string)? **ETA:** When the message is retried from the webhook controller, it calls a job to do the resend.
 
 Putting the webhook request into a background job should be quite easy, just passing along the `status` and provider's `message_id`. But again, not knowing the outcome of that means always returning `:ok`. I wasn't sure if the webhook request does anything with an `:unprocessable_entity` response (like retrying) but it would be a safe bet that some do.
 
