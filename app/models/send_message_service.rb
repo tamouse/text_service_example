@@ -11,10 +11,11 @@ class SendMessageService
 
   delegate :success, :success?, to: :client, allow_nil: true
   delegate :message_guid, to: :message, allow_nil: true
-  
+
   validates :message, presence: true
   validates :phone, presence: true
-  validate { errors.add(:phone, :inactive) unless message.phone.status == Phone::STATUS_ACTIVE }
+  validate { errors.add(:phone, :invalid) if message.phone.invalid? }
+  validate { errors.add(:phone, :inactive) if message.phone.inactive? }
   validate { errors.add(:provider, :unavailable) unless provider.present? }
 
   validates :endpoint, presence: true
@@ -24,6 +25,7 @@ class SendMessageService
     super
     @message = message
     @phone = @message&.phone
+    message.kill! if phone.nil? || phone.invalid?
     @provider = ProviderSelectorService.provider except: message.last_provider
     @endpoint = @provider&.endpoint
     @callback = CallbackDefinitionService.callback
@@ -37,10 +39,14 @@ class SendMessageService
         update_message
       else
         copy_errors
+        if client.result.status_code >= 500
+          provider.deactivate!
+        end
       end
+    else
     end
     log_activity
-    success
+    success && !message.dead?
   end
 
   def client

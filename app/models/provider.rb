@@ -20,4 +20,19 @@ class Provider < ApplicationRecord
   has_many :activity_logs, as: :loggable, dependent: :destroy
 
   scope :active, ->{ where(status: Provider::STATUS_ACTIVE) }
+
+  def active
+    status == Phone::STATUS_ACTIVE
+  end
+  alias_method :active?, :active
+
+  def inactive
+    status == Phone::STATUS_INACTIVE
+  end
+  alias_method :inactive?, :inactive
+
+  def deactivate!
+    self.status = STATUS_INACTIVE
+    save
+  end
 end

@@ -38,6 +38,6 @@ en:
           attributes:
             phone:
               inactive: 'must be active'
+              invalid: 'is invalid'
             provider:
               unavailable: 'no providers are available'
-        

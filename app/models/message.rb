@@ -26,7 +26,6 @@ class Message < ApplicationRecord
   STATUS_DELIVERED = 'delivered'        # Message was delivered
   STATUS_FAILED    = 'failed'           # Message delivery failed for some reason, can be retried
   STATUS_RETRYING  = 'retrying'         # We're retrying the send
-  STATUS_INVALID   = 'invalid'          # Can't send because the phone is invalid
   STATUS_ERROR     = 'error'            # Can't send due to some error, such as no providers
   STATUS_DEAD      = 'dead'             # Can't send because the limit was reached
   
@@ -42,9 +41,50 @@ class Message < ApplicationRecord
   
   validates :message_body, presence: true
   validates :status, presence: true
+  
+  def delivered
+    status == STATUS_DELIVERED
+  end
+  alias_method :delivered?, :delivered
+
+  def dead
+    status == STATUS_DEAD
+  end
+  alias_method :dead?, :dead
+
+  def error
+    status == STATUS_ERROR
+  end
+  alias_method :error?, :error
+
+  def failed
+    status == STATUS_FAILED
+  end
+  alias_method :failed?, :failed
+
+  def kill!
+    self.status = STATUS_DEAD
+    save!
+  end
+
+  def retrying
+    status == STATUS_RETRYING
+  end
+  alias_method :retrying?, :retrying
+
+  def sending
+    status == STATUS_SENDING
+  end
+  alias_method :sending?, :sending
+
+  def sent
+    status == STATUS_SENT
+  end
+  alias_method :sent?, :sent
+
 
   def can_retry?
-    iteration <= MAX_TRIES && status == STATUS_FAILED
+    iteration <= MAX_TRIES && [STATUS_SENT, STATUS_FAILED].include?(status)
   end
 
   private
@@ -56,5 +96,4 @@ class Message < ApplicationRecord
   def set_status
     status = STATUS_SENDING unless status.present?
   end
-
 end

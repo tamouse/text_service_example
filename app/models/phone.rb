@@ -30,10 +30,19 @@ class Phone < ApplicationRecord
     active
   end
 
+  def inactive
+    status == Phone::STATUS_INACTIVE
+  end
+  alias_method :inactive?, :inactive
+
   def invalid
     status == Phone::STATUS_INVALID
   end
   alias_method :invalid?, :invalid
+
+  def invalidate!
+    update(status: Phone::STATUS_INVALID)
+  end
 
   private
 

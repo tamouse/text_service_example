@@ -3,6 +3,8 @@
 class WebhookService
   include ActiveModel::Model
 
+  WAIT_MULTIPLIER = 2
+
   attr_accessor :status,
                 :message_guid,
                 :message,
@@ -47,7 +49,7 @@ class WebhookService
 
   def ensure_message_can_be_retried
     return unless message.present?
-    return if message.status == Message::STATUS_SENT
+    return if message.sending?
     return if message.iteration.zero?
     
     errors.add(:message, 'has exceeded the retry limit or is not in a retriable state') unless message.can_retry?
@@ -58,6 +60,7 @@ class WebhookService
     return unless phone.present?
 
     errors.add(:phone, :invalid) if phone.invalid?
+    message.update(status: Message::STATUS_DEAD) if phone.invalid?
   end
 
 
@@ -69,7 +72,7 @@ class WebhookService
       log.is_valid = false
       log.loggable_type = self.class.name
       log.data = {
-        reason: :invaoild_webhook_service,
+        reason: :invalid_webhook_service,
         errors: errors.details.as_json,
         status: status.as_json,
         message_guid: message_guid.as_json,
@@ -82,19 +85,22 @@ class WebhookService
 
   def retry_send_on_failure
     return if options[:no_retry]
-    return if status != Message::STATUS_FAILED
     return unless message.can_retry?
 
-    SendMessageJob.set(wait: message.iteration.seconds * 10).perform_later(message: message)
+    SendMessageJob.set(wait: (message.iteration * WAIT_MULTIPLIER).seconds).perform_later(message: message)
   end
 
 
   def update_message
-    message.update(status: status) if status != Message::STATUS_INVALID
+    if status == Phone::STATUS_INVALID
+      message.kill!
+    else
+      message.update(status: status)
+    end
     message.activity_logs.create do |log|
       log.origin = self.class.name
-      log.success = status == Message::STATUS_DELIVERED
-      log.is_valid = status == Message::STATUS_DELIVERED
+      log.success = message.delivered?
+      log.is_valid = message.delivered?
       log.data = {
         status: status,
         message: message.as_json,
@@ -104,11 +110,11 @@ class WebhookService
   end
 
   def update_phone
-    phone.update(status: status) if status == Phone::STATUS_INVALID
+    phone.invalidate! if status == Phone::STATUS_INVALID
     phone.activity_logs.create do |log|
       log.origin = self.class.name
-      log.success = status != Phone::STATUS_INVALID
-      log.is_valid = status != Phone::STATUS_INVALID
+      log.success = !phone.invalid?
+      log.is_valid = !phone.invalid?
       log.data = {
         status: status,
         message: message.as_json,
