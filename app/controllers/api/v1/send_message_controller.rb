@@ -16,10 +16,10 @@ module Api
               render status: :unprocessable_entity, json: service.errors.details
             end
           else
-            render status: :error, json: message.errors.details
+            render status: :unprocessable_entity, json: message.errors.details
           end
         else
-          render status: :error, json: { error: "Phone is #{phone.status}"}
+          render status: :unprocessable_entity, json: { error: "Phone is #{phone.status}"}
         end
       end
 
@@ -34,9 +34,7 @@ module Api
       end
 
       def build_phone(phone_number:)
-        Phone.find_or_create_by(number: phone_number) do |p|
-          p.status = Phone::STATUS_ACTIVE
-        end
+        Phone.find_or_create_by(number: phone_number)
       end
 
       def message_params

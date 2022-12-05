@@ -17,6 +17,7 @@
             <th>Attempts</th>
             <th>Created</th>
             <th>Last updated</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -27,9 +28,12 @@
               <td><%=message.phone.number %></td>
               <td><%=message.message_body.truncate(30) %></td>
               <td><%=message.status %></td>
-              <td><%=message.activity_logs.count %></td>
+              <td><%=message.iteration %></td>
               <td><%=l message.created_at, format: :short %></td>
               <td><%=l message.updated_at, format: :short %></td>
+              <td>
+                <%= link_to("Show", message_path(message)) %>
+              </td>
             </tr>
           <% end %>
         </tbody>

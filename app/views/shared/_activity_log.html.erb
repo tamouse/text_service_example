@@ -1,0 +1,22 @@
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Activity Log <%=activity_log.id %></h2>
+    </div>
+    <div class="card-body">
+      <p class="card-text">Activity log detail.</p>
+      <ul>
+        <% activity_log.attributes.each do |attr| %>
+          <li>
+            <strong><%=attr.first %>:&nbsp; </strong>
+            <% if attr.first == "data" %>
+              <pre><%= JSON.pretty_generate(JSON.parse(attr.last)) %></pre>
+            <% else %>
+              <%= attr.last %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</div>

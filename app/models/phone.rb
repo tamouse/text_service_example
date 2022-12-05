@@ -15,12 +15,14 @@ class Phone < ApplicationRecord
   STATUS_ACTIVE   = 'active'
   STATUS_INACTIVE = 'inactive'
   STATUS_INVALID  = 'invalid'
+
+  before_validation :set_status
   
   has_many :messages, dependent: :nullify
   has_many :activity_logs, as: :loggable, dependent: :destroy
 
   def active
-    status == STATUS_ACTIVE
+    status == Phone::STATUS_ACTIVE
   end
   alias_method :active?, :active
 
@@ -29,8 +31,13 @@ class Phone < ApplicationRecord
   end
 
   def invalid
-    status == STATUS_INVALID
+    status == Phone::STATUS_INVALID
   end
   alias_method :invalid?, :invalid
 
+  private
+
+  def set_status
+    self.status = Phone::STATUS_ACTIVE unless status.present?
+  end
 end

@@ -67,8 +67,8 @@ class SendMessageService
         provider: provider.as_json,
         callback: callback.as_json,
         client: client.as_json,
-        result: client.result.as_json,
-        raw_body: client.result.raw_body,
+        result: client&.result.as_json,
+        raw_body: client&.result&.raw_body,
         errors: errors.as_json
       }.to_json
     end
@@ -83,8 +83,8 @@ class SendMessageService
         provider: provider.as_json,
         callback: callback.as_json,
         client: client.as_json,
-        result: client.result.as_json,
-        raw_body: client.result.raw_body,
+        result: client&.result.as_json,
+        raw_body: client&.result&.raw_body,
         errors: errors.as_json
       }.to_json
     end
@@ -94,7 +94,7 @@ class SendMessageService
     guid = client.result.parsed_body.dig("message_id")
     message.update(
       message_guid: guid,
-      status: success? ? Message::STATUS_SENT : Message::STATUS_ERROR
+      status: success? ? Message::STATUS_SENT : Message::STATUS_FAILED
     )
   end
 end

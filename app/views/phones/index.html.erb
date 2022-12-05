@@ -4,7 +4,7 @@
       <h1 class="card-title">Phones</h1>
     </div>
     <div class="card-body">
-      <p class="card-text">Phones that have sent messages.</p>
+      <h3 class="card-text">Phones that have sent messages.</h3>
 
       <table class="table">
         <thead>
@@ -15,6 +15,7 @@
             <th>Msg Count</th>
             <th>First Used</th>
             <th>Last Updated</th>
+            <tn></tn>
           </tr>
         </thead>
         <tbody>
@@ -26,6 +27,9 @@
               <td><%=phone.messages.count %></td>
               <td><%=l phone.created_at, format: :short %></td>
               <td><%=l phone.updated_at, format: :short %></td>
+              <td>
+                <%= link_to("Show", phone_path(phone)) %>
+              </td>
             </tr>
           <% end %>
         </tbody>

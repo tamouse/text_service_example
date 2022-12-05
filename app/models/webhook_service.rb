@@ -47,6 +47,7 @@ class WebhookService
 
   def ensure_message_can_be_retried
     return unless message.present?
+    return if message.status == Message::STATUS_SENT
     return if message.iteration.zero?
     
     errors.add(:message, 'has exceeded the retry limit or is not in a retriable state') unless message.can_retry?
@@ -81,15 +82,15 @@ class WebhookService
 
   def retry_send_on_failure
     return if options[:no_retry]
-    return if status == Message::STATUS_FAILED
-    return if message.iteration > Message::MAX_TRIES
+    return if status != Message::STATUS_FAILED
+    return unless message.can_retry?
 
-    SendMessageJob.set(wait: message.iteration.seconds).perform_later(message: message)
+    SendMessageJob.set(wait: message.iteration.seconds * 10).perform_later(message: message)
   end
 
 
   def update_message
-    message.update(status: status)
+    message.update(status: status) if status != Message::STATUS_INVALID
     message.activity_logs.create do |log|
       log.origin = self.class.name
       log.success = status == Message::STATUS_DELIVERED
@@ -103,7 +104,7 @@ class WebhookService
   end
 
   def update_phone
-    phone.update(status: status)
+    phone.update(status: status) if status == Phone::STATUS_INVALID
     phone.activity_logs.create do |log|
       log.origin = self.class.name
       log.success = status != Phone::STATUS_INVALID

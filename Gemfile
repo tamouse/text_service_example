@@ -55,6 +55,7 @@ gem 'provider_api', path: File.expand_path('../lib/provider_api/', __FILE__)
 gem 'faraday'
 
 group :development, :test do
+  gem 'awesome_print'
   gem "pry-rails"
   gem "pry-byebug"
   gem "fabrication"

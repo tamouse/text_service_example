@@ -1,0 +1,21 @@
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">Phone <%= @phone.id %></h1>
+    </div>
+    <div class="card-body">
+      <h3 class="card-text">Phone detail.</h3>
+      <ul>
+        <% @phone.attributes.each do |attr| %>
+          <li>
+            <strong><%=attr.first %>:&nbsp; </strong>
+            <%= attr.last %>
+          </li>
+        <% end %>
+      </ul>
+
+      <h4 class="card-text">Activity logs</h4>
+      <%= render partial: 'shared/activity_log', collection: @activity_logs %>
+    </div>
+  </div>
+</div>

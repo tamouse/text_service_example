@@ -71,7 +71,22 @@ The following will tear down the databases and reset everything:
 
 *(Good when you're futzing with migrations, or mess up the data somehow.)*
 
+## Using `ngrok`
 
+Using `ngrok` is pretty simple with this application.
+
+_BEFORE_ you start the rails server, open a terminal window and run:
+``` shell
+$ ngrok http 1000 # => starts a proxy pointing at localhost:3000
+```
+
+After ngrok is running in the terminal, copy *just* the host part of the ngrok proxy.
+
+In a new terminal window, enter:
+``` shell
+$ export RAILS_DEVELOPMENT_HOSTS="<paste in the ngrok host>"
+$ bin/rails s 
+```
 ## Testing
 
 I chose to use Minitest and ActiveSupport::TestCase to keep testing fast and simple. I'm also following a philosophy for testing in the demo to test only code written for the demo, and not deal with verifying everything else one might do with models, controllers, services, libraries, and the like.
@@ -200,4 +215,3 @@ The architecture is written as though it can run in the time of a application se
 Putting the webhook request into a background job should be quite easy, just passing along the `status` and provider's `message_id`. But again, not knowing the outcome of that means always returning `:ok`. I wasn't sure if the webhook request does anything with an `:unprocessable_entity` response (like retrying) but it would be a safe bet that some do.
 
 I wanted to provide a little widget that could be popped up to send the new message AJAX request, but right now, I'd probably have to take a day to refresh myself on doing that in JavaScript, since it's been a minute since I had to build something like that.
-

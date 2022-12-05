@@ -76,6 +76,7 @@ GEM
       rake (>= 10.4, < 14.0)
     autoprefixer-rails (10.4.7.0)
       execjs (~> 2)
+    awesome_print (1.9.2)
     bcrypt (3.1.18)
     bindex (0.8.1)
     bootsnap (1.15.0)
@@ -221,6 +222,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate
+  awesome_print
   bcrypt (~> 3.1.7)
   bootsnap
   bootstrap (~> 5.2.2)

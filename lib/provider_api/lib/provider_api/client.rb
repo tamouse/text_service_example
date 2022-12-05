@@ -28,7 +28,7 @@ module ProviderApi
     def client
       return @client if defined?(@client)
 
-      @client = conn = Faraday.new(
+      @client = Faraday.new(
         headers: { 'Content-Type' => 'application/json' }
       )
     end

@@ -4,7 +4,7 @@
       <h1 class="card-title">Providers</h1>
     </div>
     <div class="card-body">
-      <p class="card-text">Providers.</p>
+      <h3 class="card-text">Providers.</h3>
 
       <table class="table">
         <thead>
@@ -16,6 +16,7 @@
             <th>Log count</th>
             <th>Created</th>
             <th>Last updated</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -28,6 +29,9 @@
               <td><%=provider.activity_logs.count %></td>
               <td><%=l provider.created_at, format: :short %></td>
               <td><%=l provider.updated_at, format: :short %></td>
+              <td>
+                <% link_to("Show", provider_path(provider)) %>
+              </td>
             </tr>
           <% end %>
         </tbody>
