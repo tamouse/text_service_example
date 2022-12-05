@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 class ProviderSelectorService
-  attr_reader :providers
+  attr_reader :providers, :except
 
-  def self.provider
-    new.provider
+  def self.provider(except: [])
+    new(except: except).provider
   end
 
-  def initialize
-    @providers = Provider.active
+  # @param [Array<Integer>] array of provider IDs to exclude from the search
+  def initialize(except: [])
+    @except = except
+    @providers = Provider.active.where.not(id: except)
   end
 
   def provider
@@ -17,9 +19,10 @@ class ProviderSelectorService
 
   def weighted_randomizer
     weighted_sum = providers.pluck(:weight).reduce(:+)
-    providers.each do |p|
-      p.update(weight: p.weight / weighted_sum)
+    normalized_list = providers.map do |p|
+      { id: p.id, weight: p.weight / weighted_sum}
     end
-    providers.max_by { |p| rand ** (1.0 / p.weight) }
+    winner = normalized_list.max_by { |p| rand ** (1.0 / p[:weight]) }
+    Provider.find_by(id: winner[:id]) if winner.present?
   end
 end

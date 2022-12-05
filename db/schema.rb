@@ -26,11 +26,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_01_221215) do
   create_table "messages", force: :cascade do |t|
     t.text "message_body"
     t.integer "phone_id"
+    t.integer "last_provider_id"
     t.string "status"
     t.string "message_guid"
     t.integer "iteration", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["last_provider_id"], name: "index_messages_on_last_provider_id"
     t.index ["phone_id"], name: "index_messages_on_phone_id"
   end
 

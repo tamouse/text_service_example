@@ -14,6 +14,7 @@ class ProviderSelectorServiceTest < ActiveSupport::TestCase
   end
 
   test "let's try the weighted_randomizer a lot and see what it does" do
+    skip :"As the provider's weight is no longer updated, this test no longer makes sense"
     service = ProviderSelectorService.new
     freq = Hash.new(0)
     1000.times do |_i|
@@ -36,6 +37,7 @@ class ProviderSelectorServiceTest < ActiveSupport::TestCase
   end
 
   test "take a provider out of service and run the weighted_randomizer many times" do
+    skip :"As the provider's weight is no longer updated, this test no longer makes sense"
     inactive_provider =  Provider.active.sample
     inactive_provider.update(status: Provider::STATUS_INACTIVE)
 
@@ -59,5 +61,13 @@ class ProviderSelectorServiceTest < ActiveSupport::TestCase
     provider = service.weighted_randomizer
 
     assert_nil provider
+  end
+
+  test "provide an exception" do
+    exception = Provider.first
+    service = ProviderSelectorService.new(except: [exception.id])
+    provider = service.weighted_randomizer
+    refute_nil provider
+    refute_equal exception.id, provider.id
   end
 end

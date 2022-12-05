@@ -21,16 +21,17 @@ class SendMessageService
   validates :callback, presence: true
 
   def initialize(message:)
+    super
     @message = message
     @phone = @message&.phone
-    @provider = ProviderSelectorService.provider
+    @provider = ProviderSelectorService.provider except: message.last_provider
     @endpoint = @provider&.endpoint
     @callback = CallbackDefinitionService.callback
   end
 
   def send!
     if valid?
-      message.update_column(:iteration, message.iteration + 1)
+      message.update(iteration: message.iteration + 1, last_provider: provider)
       client.post(phone_number: message.phone.number, message_body: message.message_body)
       if success?
         update_message
@@ -51,6 +52,7 @@ class SendMessageService
 
   def copy_errors
     errors.add(:client, client.result.parsed_body.dig("error"))
+    message.update(status: Message::STATUS_FAILED)
   end
 
 
